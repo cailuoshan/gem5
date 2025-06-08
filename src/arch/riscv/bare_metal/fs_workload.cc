@@ -40,26 +40,48 @@ namespace gem5
 namespace RiscvISA
 {
 
+// BareMetal::BareMetal(const Params &p) : Workload(p),
+//     _isBareMetal(p.bare_metal),
+//     bootloader(loader::createObjectFile(p.bootloader)),
+//     semihosting(p.semihosting)
+// {
+//     fatal_if(!bootloader, "Could not load bootloader file %s.", p.bootloader);
+//     bootloaderSymtab = bootloader->symtab();
+
+//     if (p.auto_reset_vect) {
+//         _resetVect = bootloader->entryPoint();
+//     } else {
+//         _resetVect = p.reset_vect;
+//     }
+
+//     loader::debugSymbolTable.insert(bootloaderSymtab);
+// }
 BareMetal::BareMetal(const Params &p) : Workload(p),
-    _isBareMetal(p.bare_metal),
-    bootloader(loader::createObjectFile(p.bootloader)),
-    semihosting(p.semihosting)
+    _isBareMetal(p.bare_metal), _resetVect(p.reset_vect),
+    raw_binary(p.raw_bootloader)
 {
-    fatal_if(!bootloader, "Could not load bootloader file %s.", p.bootloader);
-    bootloaderSymtab = bootloader->symtab();
-
-    if (p.auto_reset_vect) {
-        _resetVect = bootloader->entryPoint();
+    if (!p.xiangshan_cpt) {
+        bootloader = loader::createObjectFile(p.bootloader, raw_binary);
+        fatal_if(!bootloader, "Could not load bootloader file %s.",
+                 p.bootloader);
+        _resetVect = raw_binary ? p.reset_vect: bootloader->entryPoint();
+        bootloaderSymtab = bootloader->symtab();
+        inform("Using %s of bootloader or BareMetal workload, reset to %#lx\n",
+               raw_binary? "bin": "elf", _resetVect);
     } else {
+        bootloader = nullptr;
+        assert(p.bootloader.empty());
         _resetVect = p.reset_vect;
+        inform("No bootload provided, because using XS GCPT, reset to %#lx\n",
+               _resetVect);
     }
-
-    loader::debugSymbolTable.insert(bootloaderSymtab);
 }
 
 BareMetal::~BareMetal()
 {
-    delete bootloader;
+    if (bootloader) {
+        delete bootloader;
+    }
 }
 
 void
@@ -67,8 +89,14 @@ BareMetal::initState()
 {
     Workload::initState();
 
-    warn_if(!bootloader->buildImage().write(system->physProxy),
-            "Could not load sections to memory.");
+    if (bootloader) {
+        if (!raw_binary) {
+            warn_if(!bootloader->buildImage().write(system->physProxy),
+                    "Could not load sections to memory.");
+        } else {
+            warn("Using raw cpt binary and mmap to it, no bootloader loaded.");
+        }
+    }
 
     for (auto *tc: system->threads) {
         RiscvISA::Reset().invoke(tc);

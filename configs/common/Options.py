@@ -898,3 +898,23 @@ def addFSOptions(parser):
         action="store_true",
         help="Wait for remote GDB to connect.",
     )
+
+def addXiangshanFSOptions(parser):
+    # Checkpoint Options
+    parser.add_argument("--generic-rv-cpt", action= "store", type = str,
+                        default=None, required=True,
+                        help="The path of Xiangshan risc-v checkpoint")
+    parser.add_argument("--gcpt-restorer", action="store", type = str,
+                      default=None,
+                      help="The path of generic risc-v checkpoint restorer")
+
+    parser.add_argument("--raw-cpt", action= "store_true",
+                        help = "The checkpoint file is not gz but binary")
+
+    parser.add_argument("--warmup-insts-no-switch", action="store", type=int,
+        default=None,
+        help="Warmup period in total instructions, reset stats without switch")
+
+    parser.add_argument("--restore-rvv-cpt", action="store_true", default=False,
+            help="The input checkpoint is RVV, which requires RVV restorer")
+

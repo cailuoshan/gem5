@@ -154,3 +154,10 @@ class System(SimObject):
         "Base of the 64KiB PA range used for "
         "memory-mapped m5ops. Set to 0 to disable.",
     )
+
+    # Checkpoint image file for Xiangshan
+    restore_from_gcpt = Param.Bool(False, "Restoring from Xiangshan gcpt")
+    gcpt_file = Param.String("", "Xiangshan checkpoint image file")
+    map_to_raw_cpt = Param.Bool(False, "Map physical memory to raw cpt with mmap")
+    gcpt_restorer_file = Param.String("", "GCPT restorer image file")
+    gcpt_restorer_size_limit = Param.Unsigned(0x700, "Enable riscv vector extension")

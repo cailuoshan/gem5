@@ -50,6 +50,7 @@ class BareMetal : public Workload
     loader::ObjectFile *bootloader;
     loader::SymbolTable bootloaderSymtab;
     RiscvSemihosting* semihosting;
+    bool raw_binary;
 
   public:
     PARAMS(RiscvBareMetal);
