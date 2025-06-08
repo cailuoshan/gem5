@@ -140,8 +140,7 @@ def build_test_system(np, args):
     ]
 
     system.system_port = system.membus.cpu_side_ports
-    # system.num_cpus = np
-    # system.platform.setNumCores(np)
+    system.xiangshan_system = True
 
     # ---------------------------- Default Setup --------------------------- #
     # Set the cache line size for the entire system

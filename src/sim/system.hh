@@ -613,6 +613,8 @@ class System : public SimObject, public PCEventScope
 
     // Initialize Xiangshan CPT during initState
     void initState() override;
+
+    const bool xiangshanSystem;
 };
 
 void printSystems();

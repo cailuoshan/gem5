@@ -161,3 +161,5 @@ class System(SimObject):
     map_to_raw_cpt = Param.Bool(False, "Map physical memory to raw cpt with mmap")
     gcpt_restorer_file = Param.String("", "GCPT restorer image file")
     gcpt_restorer_size_limit = Param.Unsigned(0x700, "Enable riscv vector extension")
+
+    xiangshan_system = Param.Bool(False, "Simulate Xiangshan system")
