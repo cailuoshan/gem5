@@ -52,7 +52,7 @@ using vreg_t = VecRegContainer;
 
 
 const int NumVecStandardRegs = 32;
-const int NumVecInternalRegs = 8; // Used by vector uop
+const int NumVecInternalRegs = 16; // Used by vector uop
 const int NumVecRegs = NumVecStandardRegs + NumVecInternalRegs;
 
 const std::vector<std::string> VecRegNames = {
