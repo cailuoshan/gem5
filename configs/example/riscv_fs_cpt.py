@@ -71,11 +71,14 @@ from common.SysPaths import *
 from ruby import Ruby
 
 
-# Usage: ./build/RISCV/gem5.opt \
-# configs/example/riscv_fs_cpt.py \
-# --cpu-type=DerivO3CPU --caches --mem-type=DDR3_1600_8x8 --mem-size=8GB
-# --raw-cpt --generic-rv-cpt=$raw_cpt \
-# --gcpt-restorer=$gcpt.bin
+# Usage: ./build/RISCV/gem5.opt configs/example/riscv_fs_cpt.py \
+# --cpu-type=DerivO3CPU --caches --mem-type=DDR3_1600_8x8 --mem-size=8GB \
+# --raw-cpt --generic-rv-cpt=$raw_cpt
+
+# ./build/RISCV/gem5.opt configs/example/riscv_fs_cpt.py \
+# --cpu-type=DerivO3CPU --caches --mem-type=DDR3_1600_8x8 --mem-size=8GB \
+# --generic-rv-cpt=$checkpoint --restore-rvv-cpt \
+# --vlen=128 --elen=64
         
 
 # ------------------------- Usage Instructions ------------------------- #
@@ -193,7 +196,9 @@ def build_test_system(np, args):
                 )
                 system.cpu[i].branchPred.indirectBranchPred = IndirectBPClass()
         system.cpu[i].createThreads()
-        print("Create threads for test sys cpu ({})".format(type(system.cpu[i])))    
+        print("Create threads for test sys cpu ({})".format(type(system.cpu[i])))
+        system.cpu[i].isa[0].elen = args.elen
+        system.cpu[i].isa[0].vlen = args.vlen    
 
     CacheConfig.config_cache(args, system)
 
@@ -215,20 +220,19 @@ def build_test_system(np, args):
                 gcpt_restorer = os.environ["GCBV_RESTORER"]
                 print("Obtained gcpt_restorer from GCBV_RESTORER: ", gcpt_restorer)
             else:
-                fatal("Plz set $GCBV_RESTORER when running RVV checkpoints")
-        elif args.restore_rvh_cpt:
-            if "GCBH_RESTORER" in os.environ:
-                gcpt_restorer = os.environ["GCBH_RESTORER"]
-                print("Obtained gcpt_restorer from GCBH_RESTORER: ", gcpt_restorer)
-            else:
-                fatal("Plz set $GCBH_RESTORER when running RVH checkpoints")
+                gcpt_restorer = ""
+        # elif args.restore_rvh_cpt:
+        #     if "GCBH_RESTORER" in os.environ:
+        #         gcpt_restorer = os.environ["GCBH_RESTORER"]
+        #         print("Obtained gcpt_restorer from GCBH_RESTORER: ", gcpt_restorer)
+        #     else:
+        #         fatal("Plz set $GCBH_RESTORER when running RVH checkpoints")
         else:
             if "GCB_RESTORER" in os.environ:
                 gcpt_restorer = os.environ["GCB_RESTORER"]
                 print("Obtained gcpt_restorer from GCB_RESTORER: ", gcpt_restorer)
             else:
-                fatal("Plz set $GCB_RESTORER or pass it through --gcpt-restorer"
-                      " when running non-RVV checkpoints")
+                gcpt_restorer = ""
     else:
         print("Obtained gcpt_restorer from args.gcpt_restorer: ", args.gcpt_restorer)
         gcpt_restorer = args.gcpt_restorer

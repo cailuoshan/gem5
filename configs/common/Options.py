@@ -918,3 +918,6 @@ def addXiangshanFSOptions(parser):
     parser.add_argument("--restore-rvv-cpt", action="store_true", default=False,
             help="The input checkpoint is RVV, which requires RVV restorer")
 
+    parser.add_argument("--vlen", required=False, type=int, default=256)
+    parser.add_argument("--elen", required=False, type=int, default=64)
+
