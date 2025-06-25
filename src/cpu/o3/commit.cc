@@ -63,10 +63,12 @@
 #include "debug/ExecFaulting.hh"
 #include "debug/HtmCpu.hh"
 #include "debug/InstCommited.hh"
+#include "debug/DiffVecRegs.hh"
 #include "debug/O3PipeView.hh"
 #include "params/BaseO3CPU.hh"
 #include "sim/faults.hh"
 #include "sim/full_system.hh"
+#include "arch/riscv/regs/vector.hh"
 
 namespace gem5
 {
@@ -1012,6 +1014,22 @@ Commit::commitInsts()
                 // Updates misc. registers.
                 head_inst->updateMiscRegs();
 
+                if (head_inst->isVector()) {
+                    for (size_t i = 0; i < 32; i++) {
+                        uint64_t value[1024];
+                        std::stringstream ss;
+                        cpu->getArchReg(RiscvISA::vecRegClass[i],
+                                        (uint64_t*)value, tid);
+                        ss << "v" << i << ": 0x";
+                        for (int j=0; j<2; j++) {
+                            ss << std::hex << std::setw(16)
+                                << std::setfill('0') << value[j];
+                        }
+                        ss << "\n";
+                        DPRINTF(DiffVecRegs, "%s", ss.str());
+                    }
+                }
+
                 // Check instruction execution if it successfully commits and
                 // is not carrying a fault.
                 if (cpu->checker) {
@@ -1240,7 +1258,7 @@ Commit::commitHead(const DynInstPtr &head_inst, unsigned inst_num)
     DPRINTF(Commit,
             "[tid:%i] [sn:%llu] Committing instruction with PC %s\n",
             tid, head_inst->seqNum, head_inst->pcState());
-    
+
     DPRINTF(
         InstCommited, "[pc: %lx] [instCommited: %d, %s]\n", head_inst->pcState().instAddr(), head_inst->opClass(),
         head_inst->staticInst->disassemble(head_inst->pcState().instAddr()));
