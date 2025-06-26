@@ -562,7 +562,9 @@ VlFFTrimVlMicroOp::execute(ExecContext *xc, trace::InstRecord *traceData) const
         traceData->setData(miscRegClass, final_val);
     }
 
-    pc.vl(new_vl);
+    if (new_vl != 0) {
+        pc.vl(new_vl);
+    }
     xc->pcState(pc);
 
     return NoFault;
