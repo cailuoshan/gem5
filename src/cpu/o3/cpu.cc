@@ -114,7 +114,7 @@ CPU::CPU(const BaseO3CPUParams &params)
       globalSeqNum(1),
       system(params.system),
       lastRunningCycle(curCycle()),
-      ipc_r("ipc", "", 1000, params.enable_rolling),
+      ipc_r("ipc", "", 1000, params.enable_rolling, params.db_path),
       cpuStats(this)
 {
     fatal_if(FullSystem && params.numThreads > 1,

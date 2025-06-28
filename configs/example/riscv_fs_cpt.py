@@ -202,6 +202,7 @@ def build_test_system(np, args):
         # configure rolling_db
         if args.enable_rolling:
             system.cpu[i].enable_rolling = True
+            system.cpu[i].db_path = args.rolling_db_file
 
     CacheConfig.config_cache(args, system)
 

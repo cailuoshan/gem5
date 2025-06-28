@@ -901,25 +901,46 @@ def addFSOptions(parser):
 
 def addXiangshanFSOptions(parser):
     # Checkpoint Options
-    parser.add_argument("--generic-rv-cpt", action= "store", type = str,
-                        default=None, required=True,
-                        help="The path of Xiangshan risc-v checkpoint")
-    parser.add_argument("--gcpt-restorer", action="store", type = str,
-                      default=None,
-                      help="The path of generic risc-v checkpoint restorer")
-
-    parser.add_argument("--raw-cpt", action= "store_true",
-                        help = "The checkpoint file is not gz but binary")
-
-    parser.add_argument("--warmup-insts-no-switch", action="store", type=int,
+    parser.add_argument(
+        "--generic-rv-cpt", action= "store", type = str,
+        default=None, required=True,
+        help="The path of Xiangshan risc-v checkpoint"
+    )
+    parser.add_argument(
+        "--gcpt-restorer", action="store", type = str,
         default=None,
-        help="Warmup period in total instructions, reset stats without switch")
+        help="The path of generic risc-v checkpoint restorer"
+    )
 
-    parser.add_argument("--restore-rvv-cpt", action="store_true", default=False,
-            help="The input checkpoint is RVV, which requires RVV restorer")
+    parser.add_argument(
+        "--raw-cpt", action= "store_true",
+        help = "The checkpoint file is not gz but binary"
+    )
 
+    parser.add_argument(
+        "--warmup-insts-no-switch", action="store", type=int,
+        default=None,
+        help="Warmup period in total instructions, reset stats without switch"
+    )
+
+    parser.add_argument(
+        "--restore-rvv-cpt", action="store_true",
+        default=False,
+        help="The input checkpoint is RVV, which requires RVV restorer"
+    )
+
+    # RVV Options
     parser.add_argument("--vlen", required=False, type=int, default=256)
     parser.add_argument("--elen", required=False, type=int, default=64)
 
-    parser.add_argument("--enable-rolling", action="store_true", default=False,
-            help="Enable IPC Rolling DB")
+    # Rolling DB Options
+    parser.add_argument(
+        "--enable-rolling", action="store_true", 
+        default=False,
+        help="Enable IPC Rolling DB"
+    )
+    parser.add_argument(
+        "--rolling-db-file", action= "store", type = str,
+        default=None,
+        help="Path to save rolling database"
+    )

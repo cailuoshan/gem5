@@ -31,15 +31,16 @@ class Rolling
     Counter base;
     Counter value_interval;
     Counter base_interval;
+    std::string db_path;
     sqlite3 *mem_db;
     std::string tableName;
     std::vector<std::pair<std::string, DataType>> fields_vec;
 
   public:
     Rolling(const char *name, const char *desc = nullptr,
-           Counter intv = 1000, bool enable_rolling = false)
+           Counter intv = 1000, bool enable_rolling = false, const std::string &db_path = "")
            : interval(intv), base(0), value_interval(0),
-             base_interval(0), enabled(enable_rolling), tableName(name)
+             base_interval(0), enabled(enable_rolling), tableName(name), db_path(db_path)
     {
       if (enabled) {
         int rc = sqlite3_open(":memory:", &mem_db);
@@ -84,11 +85,12 @@ class Rolling
         }
 
         registerExitCallback([this](){
-          std::string db_path("./m5out/ipc_rolling.db");
-          warn("saving memdb to %s ...\n", db_path.c_str());
+          // std::string db_path("./m5out/ipc_rolling.db");
+          fatal_if(this->db_path == "", "db file path is not given!");
+          warn("saving memdb to %s ...\n", this->db_path.c_str());
           sqlite3 *disk_db;
           sqlite3_backup *pBackup;
-          int rc = sqlite3_open(db_path.c_str(), &disk_db);
+          int rc = sqlite3_open(this->db_path.c_str(), &disk_db);
           if (rc == SQLITE_OK){
             pBackup = sqlite3_backup_init(disk_db, "main", mem_db, "main");
             if (pBackup){
