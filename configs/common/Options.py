@@ -921,3 +921,5 @@ def addXiangshanFSOptions(parser):
     parser.add_argument("--vlen", required=False, type=int, default=256)
     parser.add_argument("--elen", required=False, type=int, default=64)
 
+    parser.add_argument("--enable-rolling", action="store_true", default=False,
+            help="Enable IPC Rolling DB")

@@ -198,7 +198,10 @@ def build_test_system(np, args):
         system.cpu[i].createThreads()
         print("Create threads for test sys cpu ({})".format(type(system.cpu[i])))
         system.cpu[i].isa[0].elen = args.elen
-        system.cpu[i].isa[0].vlen = args.vlen    
+        system.cpu[i].isa[0].vlen = args.vlen
+        # configure rolling_db
+        if args.enable_rolling:
+            system.cpu[i].enable_rolling = True
 
     CacheConfig.config_cache(args, system)
 
