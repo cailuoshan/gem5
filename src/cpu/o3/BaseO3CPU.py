@@ -192,5 +192,5 @@ class BaseO3CPU(BaseCPU):
     )
     needsTSO = Param.Bool(False, "Enable TSO Memory model")
 
-    enable_rolling = Param.Bool(False, "Enable IPC Rolling DB")
+    enable_rolling = Param.Bool(False, "Enable CPI Rolling DB")
     db_path = Param.String("", "Path to save rolling database")

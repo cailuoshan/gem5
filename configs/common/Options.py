@@ -937,7 +937,7 @@ def addXiangshanFSOptions(parser):
     parser.add_argument(
         "--enable-rolling", action="store_true", 
         default=False,
-        help="Enable IPC Rolling DB"
+        help="Enable CPI Rolling DB"
     )
     parser.add_argument(
         "--rolling-db-file", action= "store", type = str,

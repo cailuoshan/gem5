@@ -575,7 +575,7 @@ class CPU : public BaseCPU
     }
 
     /** Rolling Stat for the number of all-thread committed instructions */
-    Rolling ipc_r;
+    Rolling cpi_r;
 
     struct CPUStats : public statistics::Group
     {

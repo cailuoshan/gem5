@@ -114,7 +114,7 @@ CPU::CPU(const BaseO3CPUParams &params)
       globalSeqNum(1),
       system(params.system),
       lastRunningCycle(curCycle()),
-      ipc_r("ipc", "", 1000, params.enable_rolling, params.db_path),
+      cpi_r("cpi", "", 1000, params.enable_rolling, params.db_path),
       cpuStats(this)
 {
     fatal_if(FullSystem && params.numThreads > 1,
@@ -368,7 +368,7 @@ CPU::tick()
     assert(drainState() != DrainState::Drained);
 
     ++baseStats.numCycles;
-    ipc_r.roll(1);
+    cpi_r++;
     updateCycleCounters(BaseCPU::CPU_STATE_ON);
 
 //    activity = false;
@@ -1147,7 +1147,7 @@ CPU::instDone(ThreadID tid, const DynInstPtr &inst)
         thread[tid]->numInst++;
         thread[tid]->threadStats.numInsts++;
         commitStats[tid]->numInstsNotNOP++;
-        ipc_r++;
+        cpi_r.roll(1);
 
         // Check for instruction-count-based events.
         thread[tid]->comInstEventQueue.serviceEvents(thread[tid]->numInst);
