@@ -684,6 +684,7 @@ class BaseCPU : public ClockedObject
     const bool powerGatingOnIdle;
     EventFunctionWrapper enterPwrGatingEvent;
 
+    const uint64_t warmupInstCount;
 
   public:
     struct FetchCPUStats : public statistics::Group

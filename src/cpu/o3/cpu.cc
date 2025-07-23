@@ -60,6 +60,7 @@
 #include "sim/process.hh"
 #include "sim/stat_control.hh"
 #include "sim/system.hh"
+#include "sim/async.hh"
 
 namespace gem5
 {
@@ -1151,6 +1152,11 @@ CPU::instDone(ThreadID tid, const DynInstPtr &inst)
 
         // Check for instruction-count-based events.
         thread[tid]->comInstEventQueue.serviceEvents(thread[tid]->numInst);
+
+        if (this->warmupInstCount && totalInsts() == this->warmupInstCount) {
+            fprintf(stderr, "Will trigger stat dump and reset\n");
+            statistics::schedStatEvent(true, true, curTick(), 0);
+        }
     }
     thread[tid]->numOp++;
     thread[tid]->threadStats.numOps++;

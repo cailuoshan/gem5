@@ -164,6 +164,9 @@ class BaseCPU(ClockedObject):
     _uncached_interrupt_response_ports = []
     _uncached_interrupt_request_ports = []
 
+    warmupInstCount = Param.Counter(0,
+        "reset stats when any thread has reached this inst count")
+
     def createInterruptController(self):
         self.interrupts = [
             self.ArchInterrupts() for i in range(self.numThreads)

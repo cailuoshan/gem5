@@ -919,7 +919,7 @@ def addXiangshanFSOptions(parser):
 
     parser.add_argument(
         "--warmup-insts-no-switch", action="store", type=int,
-        default=None,
+        default=20*10**6,
         help="Warmup period in total instructions, reset stats without switch"
     )
 
