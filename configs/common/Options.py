@@ -172,6 +172,10 @@ def addNoISAOptions(parser):
 
     parser.add_argument("--memchecker", action="store_true")
 
+    # DRAMsim3 option
+    parser.add_argument("--dramsim3-ini", type=str, default=None,
+                        help = "dramsim3 config file")
+
     # Cache Options
     parser.add_argument(
         "--external-memory-system",
@@ -919,7 +923,7 @@ def addXiangshanFSOptions(parser):
 
     parser.add_argument(
         "--warmup-insts-no-switch", action="store", type=int,
-        default=20*10**6,
+        default=None,
         help="Warmup period in total instructions, reset stats without switch"
     )
 

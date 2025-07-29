@@ -144,6 +144,7 @@ def config_mem(options, system):
     opt_dram_powerdown = getattr(options, "enable_dram_powerdown", None)
     opt_mem_channels_intlv = getattr(options, "mem_channels_intlv", 128)
     opt_xor_low_bit = getattr(options, "xor_low_bit", 0)
+    opt_dramsim3_ini = getattr(options, 'dramsim3_ini', None)
 
     if opt_mem_type == "HMC_2500_1x32":
         HMChost = HMC.config_hmc_host_ctrl(options, system)
@@ -240,7 +241,12 @@ def config_mem(options, system):
                     )
 
                 # Create the controller that will drive the interface
-                mem_ctrl = dram_intf.controller()
+                if hasattr(m5.objects, 'DRAMsim3') and issubclass(intf, m5.objects.DRAMsim3):
+                    if opt_dramsim3_ini:
+                        dram_intf.configFile = opt_dramsim3_ini
+                    mem_ctrl = dram_intf
+                else:
+                    mem_ctrl = dram_intf.controller()
 
                 mem_ctrls.append(mem_ctrl)
 

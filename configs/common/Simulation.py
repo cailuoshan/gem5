@@ -822,6 +822,7 @@ def run(options, root, testsys, cpu_class):
     if exit_event.getCode() != 0:
         print("Simulated exit code not 0! Exit code is", exit_event.getCode())
 
+
 def run_vanilla(options, root, testsys, cpu_class):
     # Setup global stat filtering.
     stat_root_simobjs = []
@@ -837,15 +838,15 @@ def run_vanilla(options, root, testsys, cpu_class):
             testsys.cpu[i].max_insts_any_thread = options.maxinsts
 
     if cpu_class:
-        switch_cpus = [cpu_class(switched_out=True, cpu_id=(i))
-                       for i in range(np)]
+        switch_cpus = [
+            cpu_class(switched_out=True, cpu_id=(i)) for i in range(np)
+        ]
 
         for i in range(np):
             switch_cpus[i].system = testsys
             switch_cpus[i].workload = testsys.cpu[i].workload
             switch_cpus[i].clk_domain = testsys.cpu[i].clk_domain
-            switch_cpus[i].progress_interval = \
-                testsys.cpu[i].progress_interval
+            switch_cpus[i].progress_interval = testsys.cpu[i].progress_interval
             switch_cpus[i].isa = testsys.cpu[i].isa
             # simulation period
             if options.maxinsts:
@@ -856,10 +857,9 @@ def run_vanilla(options, root, testsys, cpu_class):
             if options.indirect_bp_type:
                 IndirectBPClass = ObjectList.indirect_bp_list.get(
                     options.indirect_bp_type)
-                switch_cpus[i].branchPred.indirectBranchPred = \
-                    IndirectBPClass()
+                switch_cpus[i].branchPred.indirectBranchPred = IndirectBPClass()
             switch_cpus[i].createThreads()
-            print("Create threads for switch cpu ({})".format(switch_cpus[i]))
+            print(f"Create threads for switch cpu ({switch_cpus[i]})")
 
         testsys.switch_cpus = switch_cpus
         switch_cpu_list = [(testsys.cpu[i], switch_cpus[i]) for i in range(np)]
@@ -890,8 +890,10 @@ def run_vanilla(options, root, testsys, cpu_class):
         maxtick_from_maxtime = m5.ticks.fromSeconds(options.maxtime)
         explicit_maxticks += 1
     if explicit_maxticks > 1:
-        warn("Specified multiple of --abs-max-tick, --rel-max-tick, --maxtime."\
-             " Using least")
+        warn(
+            "Specified multiple of --abs-max-tick, --rel-max-tick, --maxtime."
+            " Using least"
+        )
     maxtick = min([maxtick_from_abs, maxtick_from_rel, maxtick_from_maxtime])
 
     print("**** REAL SIMULATION ****")
@@ -900,8 +902,9 @@ def run_vanilla(options, root, testsys, cpu_class):
     # will occur in the benchmark code it self.
     exit_event = benchCheckpoints(options, maxtick, cptdir=None)
 
-    print('Exiting @ tick %i because %s' %
-          (m5.curTick(), exit_event.getCause()))
+    print(
+        "Exiting @ tick %i because %s" % (m5.curTick(), exit_event.getCause())
+    )
 
     if exit_event.getCode() != 0:
         print("Simulated exit code not 0! Exit code is", exit_event.getCode())
