@@ -45,3 +45,15 @@ def format NemuOp() {{
     decode_block = BasicDecode.subst(iop)
     exec_output = NoWBExecute.subst(iop)
 }};
+
+def format QemuSignal() {{
+    iop = InstObjParams(name, Name, 'PseudoOp', '''
+        [[maybe_unused]] uint64_t result;
+        ''',
+        ['IsNonSpeculative', 'IsSerializeAfter'])
+
+    header_output = BasicDeclare.subst(iop)
+    decoder_output = BasicConstructor.subst(iop)
+    decode_block = BasicDecode.subst(iop)
+    exec_output = NoWBExecute.subst(iop)
+}};
