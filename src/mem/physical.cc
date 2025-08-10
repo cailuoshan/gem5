@@ -764,7 +764,20 @@ PhysicalMemory::unserializeFromZstd(std::string filepath, unsigned store_id, lon
     }
 
     // read compressed file
-    ssize_t compressed_file_buffer_size = read(fd, compress_file_buffer, file_size);
+    // ssize_t compressed_file_buffer_size = read(fd, compress_file_buffer, file_size);
+    ssize_t compressed_file_buffer_size = 0;
+    while (compressed_file_buffer_size < file_size) {
+        ssize_t bytes_read = read(fd, (char*)compress_file_buffer + compressed_file_buffer_size, file_size - compressed_file_buffer_size);
+        if (bytes_read < 0) {
+            free(compress_file_buffer);
+            close(fd);
+            fatal("Compress file read failed at offset %ld\n", compressed_file_buffer_size);
+        }
+        if (bytes_read == 0) {
+            break; // EOF
+        }
+        compressed_file_buffer_size += bytes_read;
+    }
     warn("Read zstd file size %lu\n", compressed_file_buffer_size);
     if (compressed_file_buffer_size != file_size) {
         free(compress_file_buffer);
